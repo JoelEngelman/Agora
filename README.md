@@ -1,47 +1,67 @@
-# Agora
-
-**Write. Discuss. Create.**
-
-Agora is a modern publishing and community platform designed around real writing, real discussion, following people, and giving every member a customizable corner of the internet.
-
-## Product principles
-
-- No infinite-scroll feed.
-- Followers and following still exist.
-- No fake/demo users, posts, comments, followers, or communities.
-- Long-form articles are first-class content.
-- Discussions and communities are first-class content.
-- Users can build a personal Agora homepage with a visual component editor.
-- Public personal sites use the pattern `agora.pages.dev/username/`.
-- The database is Cloudflare D1.
-- The application is deployed as a Cloudflare Worker with static assets.
-
-## Current foundation
-
-- Account signup/login/logout with secure session cookies.
-- PBKDF2 password hashing using the Web Crypto API.
-- D1 schema for users, sessions, posts, tags, follows, likes, bookmarks, comments, communities, discussions, replies, notifications, and website pages.
-- Article publishing and search.
-- Likes, bookmarks, comments, follows, and notifications.
-- Public user profiles.
-- Personal website JSON storage and a visual builder foundation.
-- Responsive modern UI.
-
-## Cloudflare deployment
-
-Workers Builds can deploy this repository directly from GitHub. The repository contains `wrangler.jsonc`, which binds the existing `agora-db` D1 database as `DB` and serves the `public/` directory as Worker assets.
-
-The package deploy script applies D1 migrations remotely and then deploys the Worker:
-
-```text
-npm run deploy
-```
-
-For Cloudflare Workers Builds, use:
-
-- Build command: leave blank
-- Deploy command: `npm run deploy`
-- Root directory: `/`
-- Production branch: `main`
-
-No local Node.js, npm, Wrangler, or other developer software is required for the GitHub → Cloudflare deployment workflow.
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f5f2">
+  <title>Agora — Write. Discuss. Create.</title>
+  <meta name="description" content="Agora is a modern place to write, discuss ideas, follow people and build your own corner of the internet.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="Agora home"><span class="brand-mark">A</span><span>agora</span></a>
+      <nav class="desktop-nav" aria-label="Primary">
+        <button data-view="home">Home</button>
+        <button data-view="discover">Discover</button>
+        <button data-view="following">Following</button>
+        <button data-view="forums">Forums</button>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-btn" id="searchBtn" aria-label="Search">⌕</button>
+        <button class="btn ghost" id="loginBtn">Sign in</button>
+        <button class="btn primary" id="signupBtn">Join Agora</button>
+        <div class="account-menu hidden" id="accountMenu">
+          <button id="accountName"></button>
+          <div class="account-dropdown">
+            <button data-view="profile">My profile</button>
+            <button data-view="builder">Website builder</button>
+            <button data-view="write">Write</button>
+            <button id="logoutBtn">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main id="main"></main>
+    <div class="modal hidden" id="authModal" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <button class="modal-close" data-close-modal>×</button>
+        <div class="eyebrow">WELCOME TO AGORA</div>
+        <h2 id="authTitle">Create your account</h2>
+        <p class="muted" id="authSubtitle">Make a place for your ideas.</p>
+        <form id="authForm">
+          <label id="usernameField">Username<input name="username" autocomplete="username" placeholder="yourname" required></label>
+          <label>Email<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+          <label>Password<input name="password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required></label>
+          <div class="form-error" id="authError"></div>
+          <button class="btn primary full" type="submit" id="authSubmit">Create account</button>
+        </form>
+        <button class="text-btn" id="authSwitch">Already have an account? Sign in</button>
+      </div>
+    </div>
+    <div class="modal hidden" id="searchModal" role="dialog" aria-modal="true">
+      <div class="modal-card search-card">
+        <button class="modal-close" data-close-modal>×</button>
+        <div class="search-row"><input id="searchInput" placeholder="Search Agora..." autofocus><button class="btn primary" id="doSearch">Search</button></div>
+        <div id="searchResults" class="stack"></div>
+      </div>
+    </div>
+    <div class="toast hidden" id="toast"></div>
+  </div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
