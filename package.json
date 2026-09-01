@@ -1,0 +1,12 @@
+{
+  "name": "agora",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agora — Write. Discuss. Create.",
+  "scripts": {
+    "deploy": "wrangler d1 migrations apply agora-db --remote && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.68.0"
+  }
+}
